@@ -1,6 +1,8 @@
-# project-template
+# Promotions
 
-This is a skeleton you can use to start your projects
+Below are the instructions for creating and managing promotions
+
+You can find more information below.
 
 ## Overview
 
