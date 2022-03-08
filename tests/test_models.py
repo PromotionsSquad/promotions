@@ -1,17 +1,17 @@
 """
-Test cases for YourResourceModel Model
+Test cases for Promotion Model
 
 """
 import logging
 import unittest
 import os
-from service.models import YourResourceModel, DataValidationError, db
+from service.models import Promotion, DataValidationError, db
 
 ######################################################################
 #  <your resource name>   M O D E L   T E S T   C A S E S
 ######################################################################
-class TestYourResourceModel(unittest.TestCase):
-    """ Test Cases for YourResourceModel Model """
+class TestPromotion(unittest.TestCase):
+    """ Test Cases for Promotion Model """
 
     @classmethod
     def setUpClass(cls):
@@ -25,7 +25,8 @@ class TestYourResourceModel(unittest.TestCase):
 
     def setUp(self):
         """ This runs before each test """
-        pass
+        db.drop_all()
+        db.create_all()
 
     def tearDown(self):
         """ This runs after each test """
@@ -35,6 +36,14 @@ class TestYourResourceModel(unittest.TestCase):
     #  T E S T   C A S E S
     ######################################################################
 
-    def test_XXXX(self):
-        """ Test something """
-        self.assertTrue(True)
+    def test_created(self):
+        """ Test Promotion.create """
+        allPromotions = Promotion.query.all()
+        self.assertEquals(len(allPromotions), 0)
+
+        promo = Promotion()
+        promo.name = "30 days free"
+        promo.create()
+
+        self.assertEquals(len(Promotion.query.all()), 1)
+        self.assertEquals(Promotion.query.filter_by(id=1).first().name, "30 days free")
