@@ -47,3 +47,5 @@ class TestPromotion(unittest.TestCase):
 
         self.assertEquals(len(Promotion.query.all()), 1)
         self.assertEquals(Promotion.query.filter_by(id=1).first().name, "30 days free")
+
+        #misc
