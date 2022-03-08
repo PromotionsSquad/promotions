@@ -8,12 +8,6 @@ You can find more information below:
 
 In this repository you will find the instructions and files for managing promotions. The `/service` folder contains our `models.py` file for our promotions model and a `routes.py` file for promotions. The `/tests` folder has test case starter code for testing the promotions model and the service separately. The functionality of our promotions model will be to create, manage, edit and delete promotions.
 
-
-```bash
-    cp .coveragerc ../<your_repo_folder>/
-    cp .gitignore  ../<your_repo_folder>/
-```
-
 ## Contents
 
 The project contains the following:
@@ -35,10 +29,8 @@ service/                - service python package
 
 tests/              - test cases package
 ├── __init__.py     - package initializer
-├── test_models.py  - test suite for busines models
+├── test_models.py  - test suite for business models
 └── test_routes.py  - test suite for service routes
 
 Vagrantfile         - sample Vagrant file that installs Python 3 and PostgreSQL
-```
-
-
+``
