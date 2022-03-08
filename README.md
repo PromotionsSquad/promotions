@@ -2,7 +2,7 @@
 
 Below are the instructions for creating and managing promotions
 
-You can find more information below:
+You can find more information below.
 
 ## Overview
 
