@@ -10,7 +10,7 @@ In this repository you will find the instructions and files for managing promoti
 
 ## Contents
 
-The project contains the following:
+Our promotions project contains the following:
 
 ```text
 .coveragerc         - settings file for code coverage options
