@@ -108,22 +108,6 @@ class TestPromotionServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), 5)
 
-    def test_get_promotion(self):
-        """Get a single Promotion"""
-        # get the id of a promotion
-        test_promotion = self._create_promotions(1)[0]
-        resp = self.app.get(
-            "/promotions/{}".format(test_promotion.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data["name"], test_promotion.name)
-
-    def test_get_promotion_not_found(self):
-        """Get a Promotion thats not found"""
-        resp = self.app.get("/promotions/0")
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
     def test_create_promotion(self):
         """Create a new Promotion"""
         test_promotion = PromotionFactory()
@@ -176,69 +160,3 @@ class TestPromotionServer(unittest.TestCase):
     #         BASE_URL, json=test_promotion.serialize(), content_type="application/json"
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-
-    def test_update_promotion(self):
-        """Update an existing Promotion"""
-        # create a promotion to update
-        test_promotion = PromotionFactory()
-        resp = self.app.post(
-            BASE_URL, json=test_promotion.serialize(), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-        # update the promotion
-        new_promotion = resp.get_json()
-        logging.debug(new_promotion)
-        new_promotion["category"] = "unknown"
-        resp = self.app.put(
-            "/promotions/{}".format(new_promotion["id"]),
-            json=new_promotion,
-            content_type=CONTENT_TYPE_JSON,
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        updated_promotion = resp.get_json()
-        self.assertEqual(updated_promotion["category"], "unknown")
-
-    def test_delete_promotion(self):
-        """Delete a Promotion"""
-        test_promotion = self._create_promotions(1)[0]
-        resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, test_promotion.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(len(resp.data), 0)
-        # make sure they are deleted
-        resp = self.app.get(
-            "{0}/{1}".format(BASE_URL, test_promotion.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_query_promotion_list_by_category(self):
-        """Query Promotions by Category"""
-        promotions = self._create_promotions(10)
-        test_category = promotions[0].category
-        category_promotions = [promotion for promotion in promotions if promotion.category == test_category]
-        resp = self.app.get(
-            BASE_URL, query_string="category={}".format(quote_plus(test_category))
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(category_promotions))
-        # check the data just to be sure
-        for promotion in data:
-            self.assertEqual(promotion["category"], test_category)
-
-    # @patch('service.routes.Promotion.find_by_name')
-    # def test_bad_request(self, bad_request_mock):
-    #     """ Test a Bad Request error from Find By Name """
-    #     bad_request_mock.side_effect = DataValidationError()
-    #     resp = self.app.get(BASE_URL, query_string='name=fido')
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-    # @patch('service.routes.Promotion.find_by_name')
-    # def test_mock_search_data(self, pet_find_mock):
-    #     """ Test showing how to mock data """
-    #     pet_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'fido'})]
-    #     resp = self.app.get(BASE_URL, query_string='name=fido')
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)

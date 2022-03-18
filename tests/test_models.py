@@ -95,46 +95,6 @@ class TestPromotionModel(unittest.TestCase):
         promotions = Promotion.all()
         self.assertEqual(len(promotions), 1)
 
-    def test_read_a_promotion(self):
-        """Read a Promotion"""
-        promotion = PromotionFactory()
-        logging.debug(promotion)
-        promotion.create()
-        self.assertEqual(promotion.id, 1)
-        # Fetch it back 
-        found_promotion = Promotion.find(promotion.id)
-        self.assertEqual(found_promotion.id, promotion.id)
-        self.assertEqual(found_promotion.name, promotion.name)
-        self.assertEqual(found_promotion.category, promotion.category)
-
-    def test_update_a_promotion(self):
-        """Update a Promotion"""
-        promotion = PromotionFactory()
-        logging.debug(promotion)
-        promotion.create()
-        logging.debug(promotion)
-        self.assertEqual(promotion.id, 1)
-        # Change it an save it
-        promotion.category = "k9"
-        original_id = promotion.id
-        promotion.update()
-        self.assertEqual(promotion.id, original_id)
-        self.assertEqual(promotion.category, "k9")
-        # Fetch it back and make sure the id hasn't changed
-        # but the data did change
-        promotions = Promotion.all()
-        self.assertEqual(len(promotions), 1)
-        self.assertEqual(promotions[0].id, 1)
-        self.assertEqual(promotions[0].category, "k9")
-
-    def test_delete_a_promotion(self):
-        """Delete a Promotion"""
-        promotion = PromotionFactory()
-        promotion.create()
-        self.assertEqual(len(Promotion.all()), 1)
-        # delete the promotion and make sure it isn't in the database
-        promotion.delete()
-        self.assertEqual(len(Promotion.all()), 0)
 
     def test_list_all_promotions(self):
         """List Promotions in the database"""
@@ -198,53 +158,6 @@ class TestPromotionModel(unittest.TestCase):
         promotion = Promotion()
         self.assertRaises(DataValidationError, promotion.deserialize, data)
 
-
-    def test_find_promotion(self):
-        """Find a Promotion by ID"""
-        promotions = PromotionFactory.create_batch(3)
-        for promotion in promotions:
-            promotion.create()
-        logging.debug(promotions)
-        # make sure they got saved
-        self.assertEqual(len(Promotion.all()), 3)
-        # find the 2nd promotion in the list
-        promotion = Promotion.find(promotions[1].id)
-        self.assertIsNot(promotion, None)
-        self.assertEqual(promotion.id, promotions[1].id)
-        self.assertEqual(promotion.name, promotions[1].name)
-        self.assertEqual(promotion.available, promotions[1].available)
-
-    def test_find_by_category(self):
-        """Find Promotions by Category"""
-        Promotion(name="Fido", category="dog", available=True).create()
-        Promotion(name="Kitty", category="cat", available=False).create()
-        promotions = Promotion.find_by_category("cat")
-        self.assertEqual(promotions[0].category, "cat")
-        self.assertEqual(promotions[0].name, "Kitty")
-        self.assertEqual(promotions[0].available, False)
-
-    def test_find_by_name(self):
-        """Find a Promotion by Name"""
-        Promotion(name="Fido", category="dog", available=True).create()
-        Promotion(name="Kitty", category="cat", available=False).create()
-        promotions = Promotion.find_by_name("Kitty")
-        self.assertEqual(promotions[0].category, "cat")
-        self.assertEqual(promotions[0].name, "Kitty")
-        self.assertEqual(promotions[0].available, False)
-
-    def test_find_by_availability(self):
-        """Find Promotions by Availability"""
-        Promotion(name="Fido", category="dog", available=True).create()
-        Promotion(name="Kitty", category="cat", available=False).create()
-        Promotion(name="Fifi", category="dog", available=True).create()
-        promotions = Promotion.find_by_availability(False)
-        pet_list = list(promotions)
-        self.assertEqual(len(pet_list), 1)
-        self.assertEqual(promotions[0].name, "Kitty")
-        self.assertEqual(promotions[0].category, "cat")
-        promotions = Promotion.find_by_availability(True)
-        pet_list = list(promotions)
-        self.assertEqual(len(pet_list), 2)
 
     def test_find_or_404_found(self):
         """Find or return 404 found"""
