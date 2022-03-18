@@ -13,23 +13,23 @@
 # limitations under the License.
 
 """
-Test cases for Pet Model
+Test cases for Promotion Model
 
 Test cases can be run with:
     nosetests
     coverage report -m
 
 While debugging just these tests it's convenient to use this:
-    nosetests --stop tests/test_pets.py:TestPetModel
+    nosetests --stop tests/test_promotions.py:TestPetModel
 
 """
 import os
 import logging
 import unittest
 from werkzeug.exceptions import NotFound
-from service.models import Pet, Gender, DataValidationError, db
+from service.models import Promotion, DataValidationError, db
 from service import app
-from factories import PetFactory
+from factories import PromotionFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -37,11 +37,11 @@ DATABASE_URI = os.getenv(
 
 
 ######################################################################
-#  P E T   M O D E L   T E S T   C A S E S
+#  P R O M O T I O N   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
-class TestPetModel(unittest.TestCase):
-    """Test Cases for Pet Model"""
+class TestPromotionModel(unittest.TestCase):
+    """Test Cases for Promotion Model"""
 
     @classmethod
     def setUpClass(cls):
@@ -50,7 +50,7 @@ class TestPetModel(unittest.TestCase):
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        Pet.init_db(app)
+        Promotion.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
@@ -71,222 +71,193 @@ class TestPetModel(unittest.TestCase):
     #  T E S T   C A S E S
     ######################################################################
 
-    def test_create_a_pet(self):
-        """Create a pet and assert that it exists"""
-        pet = Pet(name="Fido", category="dog", available=True, gender=Gender.MALE)
-        self.assertTrue(pet is not None)
-        self.assertEqual(pet.id, None)
-        self.assertEqual(pet.name, "Fido")
-        self.assertEqual(pet.category, "dog")
-        self.assertEqual(pet.available, True)
-        self.assertEqual(pet.gender, Gender.MALE)
-        pet = Pet(name="Fido", category="dog", available=False, gender=Gender.FEMALE)
-        self.assertEqual(pet.available, False)
-        self.assertEqual(pet.gender, Gender.FEMALE)
+    def test_create_a_promotion(self):
+        """Create a promotion and assert that it exists"""
+        promotion = Promotion(name="Fido", category="dog", available=True)
+        self.assertTrue(promotion is not None)
+        self.assertEqual(promotion.id, None)
+        self.assertEqual(promotion.name, "Fido")
+        self.assertEqual(promotion.category, "dog")
+        self.assertEqual(promotion.available, True)
+        promotion = Promotion(name="Fido", category="dog", available=False)
+        self.assertEqual(promotion.available, False)
 
-    def test_add_a_pet(self):
-        """Create a pet and add it to the database"""
-        pets = Pet.all()
-        self.assertEqual(pets, [])
-        pet = Pet(name="Fido", category="dog", available=True, gender=Gender.MALE)
-        self.assertTrue(pet is not None)
-        self.assertEqual(pet.id, None)
-        pet.create()
+    def test_add_a_promotion(self):
+        """Create a promotion and add it to the database"""
+        promotions = Promotion.all()
+        self.assertEqual(promotions, [])
+        promotion = Promotion(name="Fido", category="dog", available=True)
+        self.assertTrue(promotion is not None)
+        self.assertEqual(promotion.id, None)
+        promotion.create()
         # Assert that it was assigned an id and shows up in the database
-        self.assertEqual(pet.id, 1)
-        pets = Pet.all()
-        self.assertEqual(len(pets), 1)
+        self.assertEqual(promotion.id, 1)
+        promotions = Promotion.all()
+        self.assertEqual(len(promotions), 1)
 
-    def test_read_a_pet(self):
-        """Read a Pet"""
-        pet = PetFactory()
-        logging.debug(pet)
-        pet.create()
-        self.assertEqual(pet.id, 1)
+    def test_read_a_promotion(self):
+        """Read a Promotion"""
+        promotion = PromotionFactory()
+        logging.debug(promotion)
+        promotion.create()
+        self.assertEqual(promotion.id, 1)
         # Fetch it back 
-        found_pet = Pet.find(pet.id)
-        self.assertEqual(found_pet.id, pet.id)
-        self.assertEqual(found_pet.name, pet.name)
-        self.assertEqual(found_pet.category, pet.category)
+        found_promotion = Promotion.find(promotion.id)
+        self.assertEqual(found_promotion.id, promotion.id)
+        self.assertEqual(found_promotion.name, promotion.name)
+        self.assertEqual(found_promotion.category, promotion.category)
 
-    def test_update_a_pet(self):
-        """Update a Pet"""
-        pet = PetFactory()
-        logging.debug(pet)
-        pet.create()
-        logging.debug(pet)
-        self.assertEqual(pet.id, 1)
+    def test_update_a_promotion(self):
+        """Update a Promotion"""
+        promotion = PromotionFactory()
+        logging.debug(promotion)
+        promotion.create()
+        logging.debug(promotion)
+        self.assertEqual(promotion.id, 1)
         # Change it an save it
-        pet.category = "k9"
-        original_id = pet.id
-        pet.update()
-        self.assertEqual(pet.id, original_id)
-        self.assertEqual(pet.category, "k9")
+        promotion.category = "k9"
+        original_id = promotion.id
+        promotion.update()
+        self.assertEqual(promotion.id, original_id)
+        self.assertEqual(promotion.category, "k9")
         # Fetch it back and make sure the id hasn't changed
         # but the data did change
-        pets = Pet.all()
-        self.assertEqual(len(pets), 1)
-        self.assertEqual(pets[0].id, 1)
-        self.assertEqual(pets[0].category, "k9")
+        promotions = Promotion.all()
+        self.assertEqual(len(promotions), 1)
+        self.assertEqual(promotions[0].id, 1)
+        self.assertEqual(promotions[0].category, "k9")
 
-    def test_delete_a_pet(self):
-        """Delete a Pet"""
-        pet = PetFactory()
-        pet.create()
-        self.assertEqual(len(Pet.all()), 1)
-        # delete the pet and make sure it isn't in the database
-        pet.delete()
-        self.assertEqual(len(Pet.all()), 0)
+    def test_delete_a_promotion(self):
+        """Delete a Promotion"""
+        promotion = PromotionFactory()
+        promotion.create()
+        self.assertEqual(len(Promotion.all()), 1)
+        # delete the promotion and make sure it isn't in the database
+        promotion.delete()
+        self.assertEqual(len(Promotion.all()), 0)
 
-    def test_list_all_pets(self):
-        """List Pets in the database"""
-        pets = Pet.all()
-        self.assertEqual(pets, [])
-        # Create 5 Pets
+    def test_list_all_promotions(self):
+        """List Promotions in the database"""
+        promotions = Promotion.all()
+        self.assertEqual(promotions, [])
+        # Create 5 Promotions
         for i in range(5):
-            pet = PetFactory()
-            pet.create()
-        # See if we get back 5 pets
-        pets = Pet.all()
-        self.assertEqual(len(pets), 5)
+            promotion = PromotionFactory()
+            promotion.create()
+        # See if we get back 5 promotions
+        promotions = Promotion.all()
+        self.assertEqual(len(promotions), 5)
 
-    def test_serialize_a_pet(self):
-        """Test serialization of a Pet"""
-        pet = PetFactory()
-        data = pet.serialize()
+    def test_serialize_a_promotion(self):
+        """Test serialization of a Promotion"""
+        promotion = PromotionFactory()
+        data = promotion.serialize()
         self.assertNotEqual(data, None)
         self.assertIn("id", data)
-        self.assertEqual(data["id"], pet.id)
+        self.assertEqual(data["id"], promotion.id)
         self.assertIn("name", data)
-        self.assertEqual(data["name"], pet.name)
+        self.assertEqual(data["name"], promotion.name)
         self.assertIn("category", data)
-        self.assertEqual(data["category"], pet.category)
+        self.assertEqual(data["category"], promotion.category)
         self.assertIn("available", data)
-        self.assertEqual(data["available"], pet.available)
-        self.assertIn("gender", data)
-        self.assertEqual(data["gender"], pet.gender.name)
+        self.assertEqual(data["available"], promotion.available)
 
-    def test_deserialize_a_pet(self):
-        """Test deserialization of a Pet"""
+    def test_deserialize_a_promotion(self):
+        """Test deserialization of a Promotion"""
         data = {
             "id": 1,
             "name": "Kitty",
             "category": "cat",
             "available": True,
-            "gender": "FEMALE",
         }
-        pet = Pet()
-        pet.deserialize(data)
-        self.assertNotEqual(pet, None)
-        self.assertEqual(pet.id, None)
-        self.assertEqual(pet.name, "Kitty")
-        self.assertEqual(pet.category, "cat")
-        self.assertEqual(pet.available, True)
-        self.assertEqual(pet.gender, Gender.FEMALE)
+        promotion = Promotion()
+        promotion.deserialize(data)
+        self.assertNotEqual(promotion, None)
+        self.assertEqual(promotion.id, None)
+        self.assertEqual(promotion.name, "Kitty")
+        self.assertEqual(promotion.category, "cat")
+        self.assertEqual(promotion.available, True)
 
     def test_deserialize_missing_data(self):
-        """Test deserialization of a Pet with missing data"""
+        """Test deserialization of a Promotion with missing data"""
         data = {"id": 1, "name": "Kitty", "category": "cat"}
-        pet = Pet()
-        self.assertRaises(DataValidationError, pet.deserialize, data)
+        promotion = Promotion()
+        self.assertRaises(DataValidationError, promotion.deserialize, data)
 
     def test_deserialize_bad_data(self):
         """Test deserialization of bad data"""
         data = "this is not a dictionary"
-        pet = Pet()
-        self.assertRaises(DataValidationError, pet.deserialize, data)
+        promotion = Promotion()
+        self.assertRaises(DataValidationError, promotion.deserialize, data)
 
     def test_deserialize_bad_available(self):
         """Test deserialization of bad available attribute"""
-        test_pet = PetFactory()
-        data = test_pet.serialize()
+        test_promotion = PromotionFactory()
+        data = test_promotion.serialize()
         data["available"] = "true"
-        pet = Pet()
-        self.assertRaises(DataValidationError, pet.deserialize, data)
+        promotion = Promotion()
+        self.assertRaises(DataValidationError, promotion.deserialize, data)
 
-    def test_deserialize_bad_gender(self):
-        """Test deserialization of bad gender attribute"""
-        test_pet = PetFactory()
-        data = test_pet.serialize()
-        data["gender"] = "male"  # wrong case
-        pet = Pet()
-        self.assertRaises(DataValidationError, pet.deserialize, data)
 
-    def test_find_pet(self):
-        """Find a Pet by ID"""
-        pets = PetFactory.create_batch(3)
-        for pet in pets:
-            pet.create()
-        logging.debug(pets)
+    def test_find_promotion(self):
+        """Find a Promotion by ID"""
+        promotions = PromotionFactory.create_batch(3)
+        for promotion in promotions:
+            promotion.create()
+        logging.debug(promotions)
         # make sure they got saved
-        self.assertEqual(len(Pet.all()), 3)
-        # find the 2nd pet in the list
-        pet = Pet.find(pets[1].id)
-        self.assertIsNot(pet, None)
-        self.assertEqual(pet.id, pets[1].id)
-        self.assertEqual(pet.name, pets[1].name)
-        self.assertEqual(pet.available, pets[1].available)
+        self.assertEqual(len(Promotion.all()), 3)
+        # find the 2nd promotion in the list
+        promotion = Promotion.find(promotions[1].id)
+        self.assertIsNot(promotion, None)
+        self.assertEqual(promotion.id, promotions[1].id)
+        self.assertEqual(promotion.name, promotions[1].name)
+        self.assertEqual(promotion.available, promotions[1].available)
 
     def test_find_by_category(self):
-        """Find Pets by Category"""
-        Pet(name="Fido", category="dog", available=True).create()
-        Pet(name="Kitty", category="cat", available=False).create()
-        pets = Pet.find_by_category("cat")
-        self.assertEqual(pets[0].category, "cat")
-        self.assertEqual(pets[0].name, "Kitty")
-        self.assertEqual(pets[0].available, False)
+        """Find Promotions by Category"""
+        Promotion(name="Fido", category="dog", available=True).create()
+        Promotion(name="Kitty", category="cat", available=False).create()
+        promotions = Promotion.find_by_category("cat")
+        self.assertEqual(promotions[0].category, "cat")
+        self.assertEqual(promotions[0].name, "Kitty")
+        self.assertEqual(promotions[0].available, False)
 
     def test_find_by_name(self):
-        """Find a Pet by Name"""
-        Pet(name="Fido", category="dog", available=True).create()
-        Pet(name="Kitty", category="cat", available=False).create()
-        pets = Pet.find_by_name("Kitty")
-        self.assertEqual(pets[0].category, "cat")
-        self.assertEqual(pets[0].name, "Kitty")
-        self.assertEqual(pets[0].available, False)
+        """Find a Promotion by Name"""
+        Promotion(name="Fido", category="dog", available=True).create()
+        Promotion(name="Kitty", category="cat", available=False).create()
+        promotions = Promotion.find_by_name("Kitty")
+        self.assertEqual(promotions[0].category, "cat")
+        self.assertEqual(promotions[0].name, "Kitty")
+        self.assertEqual(promotions[0].available, False)
 
     def test_find_by_availability(self):
-        """Find Pets by Availability"""
-        Pet(name="Fido", category="dog", available=True).create()
-        Pet(name="Kitty", category="cat", available=False).create()
-        Pet(name="Fifi", category="dog", available=True).create()
-        pets = Pet.find_by_availability(False)
-        pet_list = list(pets)
+        """Find Promotions by Availability"""
+        Promotion(name="Fido", category="dog", available=True).create()
+        Promotion(name="Kitty", category="cat", available=False).create()
+        Promotion(name="Fifi", category="dog", available=True).create()
+        promotions = Promotion.find_by_availability(False)
+        pet_list = list(promotions)
         self.assertEqual(len(pet_list), 1)
-        self.assertEqual(pets[0].name, "Kitty")
-        self.assertEqual(pets[0].category, "cat")
-        pets = Pet.find_by_availability(True)
-        pet_list = list(pets)
-        self.assertEqual(len(pet_list), 2)
-
-    def test_find_by_gender(self):
-        """Find Pets by Gender"""
-        Pet(name="Fido", category="dog", available=True, gender=Gender.MALE).create()
-        Pet(
-            name="Kitty", category="cat", available=False, gender=Gender.FEMALE
-        ).create()
-        Pet(name="Fifi", category="dog", available=True, gender=Gender.MALE).create()
-        pets = Pet.find_by_gender(Gender.FEMALE)
-        pet_list = list(pets)
-        self.assertEqual(len(pet_list), 1)
-        self.assertEqual(pets[0].name, "Kitty")
-        self.assertEqual(pets[0].category, "cat")
-        pets = Pet.find_by_gender(Gender.MALE)
-        pet_list = list(pets)
+        self.assertEqual(promotions[0].name, "Kitty")
+        self.assertEqual(promotions[0].category, "cat")
+        promotions = Promotion.find_by_availability(True)
+        pet_list = list(promotions)
         self.assertEqual(len(pet_list), 2)
 
     def test_find_or_404_found(self):
         """Find or return 404 found"""
-        pets = PetFactory.create_batch(3)
-        for pet in pets:
-            pet.create()
+        promotions = PromotionFactory.create_batch(3)
+        for promotion in promotions:
+            promotion.create()
 
-        pet = Pet.find_or_404(pets[1].id)
-        self.assertIsNot(pet, None)
-        self.assertEqual(pet.id, pets[1].id)
-        self.assertEqual(pet.name, pets[1].name)
-        self.assertEqual(pet.available, pets[1].available)
+        promotion = Promotion.find_or_404(promotions[1].id)
+        self.assertIsNot(promotion, None)
+        self.assertEqual(promotion.id, promotions[1].id)
+        self.assertEqual(promotion.name, promotions[1].name)
+        self.assertEqual(promotion.available, promotions[1].available)
 
     def test_find_or_404_not_found(self):
         """Find or return 404 NOT found"""
-        self.assertRaises(NotFound, Pet.find_or_404, 0)
+        self.assertRaises(NotFound, Promotion.find_or_404, 0)

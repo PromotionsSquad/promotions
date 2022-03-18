@@ -13,20 +13,20 @@
 # limitations under the License.
 
 """
-Pet Store Service
+Promotion Store Service
 
 Paths:
 ------
-GET /pets - Returns a list all of the Pets
-GET /pets/{id} - Returns the Pet with a given id number
-POST /pets - creates a new Pet record in the database
-PUT /pets/{id} - updates a Pet record in the database
-DELETE /pets/{id} - deletes a Pet record in the database
+GET /promotions - Returns a list all of the Promotions
+GET /promotions/{id} - Returns the Promotion with a given id number
+POST /promotions - creates a new Promotion record in the database
+PUT /promotions/{id} - updates a Promotion record in the database
+DELETE /promotions/{id} - deletes a Promotion record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
 from werkzeug.exceptions import NotFound
-from service.models import Pet
+from service.models import Promotion
 from . import status  # HTTP Status Codes
 from . import app  # Import Flask application
 
@@ -39,117 +39,117 @@ def index():
     app.logger.info("Request for Root URL")
     return (
         jsonify(
-            name="Pet Demo REST API Service",
+            name="Promotion Demo REST API Service",
             version="1.0",
-            paths=url_for("list_pets", _external=True),
+            paths=url_for("list_promotions", _external=True),
         ),
         status.HTTP_200_OK,
     )
 
 
 ######################################################################
-# LIST ALL PETS
+# LIST ALL promotionS
 ######################################################################
-@app.route("/pets", methods=["GET"])
-def list_pets():
-    """Returns all of the Pets"""
-    app.logger.info("Request for pet list")
-    pets = []
+@app.route("/promotions", methods=["GET"])
+def list_promotions():
+    """Returns all of the promotions"""
+    app.logger.info("Request for promotion list")
+    promotions = []
     category = request.args.get("category")
     name = request.args.get("name")
     if category:
-        pets = Pet.find_by_category(category)
+        promotions = Promotion.find_by_category(category)
     elif name:
-        pets = Pet.find_by_name(name)
+        promotions = Promotion.find_by_name(name)
     else:
-        pets = Pet.all()
+        promotions = Promotion.all()
 
-    results = [pet.serialize() for pet in pets]
-    app.logger.info("Returning %d pets", len(results))
+    results = [promotion.serialize() for promotion in promotions]
+    app.logger.info("Returning %d promotions", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
 
 
 ######################################################################
-# RETRIEVE A PET
+# RETRIEVE A promotion
 ######################################################################
-@app.route("/pets/<int:pet_id>", methods=["GET"])
-def get_pets(pet_id):
+@app.route("/promotions/<int:promotion_id>", methods=["GET"])
+def get_promotions(promotion_id):
     """
-    Retrieve a single Pet
+    Retrieve a single Promotion
 
-    This endpoint will return a Pet based on it's id
+    This endpoint will return a Promotion based on it's id
     """
-    app.logger.info("Request for pet with id: %s", pet_id)
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
+    app.logger.info("Request for promotion with id: %s", promotion_id)
+    promotion = Promotion.find(promotion_id)
+    if not promotion:
+        raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
 
-    app.logger.info("Returning pet: %s", pet.name)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
+    app.logger.info("Returning promotion: %s", promotion.name)
+    return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
-# ADD A NEW PET
+# ADD A NEW promotion
 ######################################################################
-@app.route("/pets", methods=["POST"])
-def create_pets():
+@app.route("/promotions", methods=["POST"])
+def create_promotions():
     """
-    Creates a Pet
-    This endpoint will create a Pet based the data in the body that is posted
+    Creates a Promotion
+    This endpoint will create a Promotion based the data in the body that is posted
     """
-    app.logger.info("Request to create a pet")
+    app.logger.info("Request to create a promotion")
     check_content_type("application/json")
-    pet = Pet()
-    pet.deserialize(request.get_json())
-    pet.create()
-    message = pet.serialize()
-    location_url = url_for("get_pets", pet_id=pet.id, _external=True)
+    promotion = Promotion()
+    promotion.deserialize(request.get_json())
+    promotion.create()
+    message = promotion.serialize()
+    location_url = url_for("get_promotions", promotion_id=promotion.id, _external=True)
 
-    app.logger.info("Pet with ID [%s] created.", pet.id)
+    app.logger.info("Promotion with ID [%s] created.", promotion.id)
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
 
 ######################################################################
-# UPDATE AN EXISTING PET
+# UPDATE AN EXISTING promotion
 ######################################################################
-@app.route("/pets/<int:pet_id>", methods=["PUT"])
-def update_pets(pet_id):
+@app.route("/promotions/<int:promotion_id>", methods=["PUT"])
+def update_promotions(promotion_id):
     """
-    Update a Pet
+    Update a Promotions
 
-    This endpoint will update a Pet based the body that is posted
+    This endpoint will update a Promotions based the body that is posted
     """
-    app.logger.info("Request to update pet with id: %s", pet_id)
+    app.logger.info("Request to update promotion with id: %s", promotion_id)
     check_content_type("application/json")
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-    pet.deserialize(request.get_json())
-    pet.id = pet_id
-    pet.update()
+    promotion = Promotion.find(promotion_id)
+    if not promotion:
+        raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
+    promotion.deserialize(request.get_json())
+    promotion.id = promotion_id
+    promotion.update()
 
-    app.logger.info("Pet with ID [%s] updated.", pet.id)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
+    app.logger.info("Promotion with ID [%s] updated.", promotion.id)
+    return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
-# DELETE A PET
+# DELETE A promotion
 ######################################################################
-@app.route("/pets/<int:pet_id>", methods=["DELETE"])
-def delete_pets(pet_id):
+@app.route("/promotions/<int:promotion_id>", methods=["DELETE"])
+def delete_promotions(promotion_id):
     """
-    Delete a Pet
+    Delete a Promotion
 
-    This endpoint will delete a Pet based the id specified in the path
+    This endpoint will delete a Promotion based the id specified in the path
     """
-    app.logger.info("Request to delete pet with id: %s", pet_id)
-    pet = Pet.find(pet_id)
-    if pet:
-        pet.delete()
+    app.logger.info("Request to delete promotion with id: %s", promotion_id)
+    promotion = Promotion.find(promotion_id)
+    if promotion:
+        promotion.delete()
 
-    app.logger.info("Pet with ID [%s] delete complete.", pet_id)
+    app.logger.info("Promotion with ID [%s] delete complete.", promotion_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
 
 
