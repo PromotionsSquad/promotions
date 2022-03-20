@@ -176,3 +176,18 @@ class TestPromotionServer(unittest.TestCase):
     #         BASE_URL, json=test_promotion.serialize(), content_type="application/json"
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_query_promotion_list_by_category(self):
+        """Query Promotions by Category"""
+        promotions = self._create_promotions(10)
+        test_category = promotions[0].category
+        category_promotions = [promotion for promotion in promotions if promotion.category == test_category]
+        resp = self.app.get(
+            BASE_URL, query_string="category={}".format(quote_plus(test_category))
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(category_promotions))
+        # check the data just to be sure
+        for promotion in data:
+            self.assertEqual(promotion["category"], test_category)

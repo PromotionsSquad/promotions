@@ -94,7 +94,18 @@ class TestPromotionModel(unittest.TestCase):
         self.assertEqual(promotion.id, 1)
         promotions = Promotion.all()
         self.assertEqual(len(promotions), 1)
-
+   
+    def test_read_a_promotion(self):
+        """Read a Promotion"""
+        promotion = PromotionFactory()
+        logging.debug(promotion)
+        promotion.create()
+        self.assertEqual(promotion.id, 1)
+        # Fetch it back 
+        found_promotion = Promotion.find(promotion.id)
+        self.assertEqual(found_promotion.id, promotion.id)
+        self.assertEqual(found_promotion.name, promotion.name)
+        self.assertEqual(found_promotion.category, promotion.category)
 
     def test_list_all_promotions(self):
         """List Promotions in the database"""
