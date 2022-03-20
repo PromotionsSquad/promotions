@@ -48,7 +48,7 @@ def index():
 
 
 ######################################################################
-# LIST ALL promotionS
+# LIST ALL promotions
 ######################################################################
 @app.route("/promotions", methods=["GET"])
 def list_promotions():
