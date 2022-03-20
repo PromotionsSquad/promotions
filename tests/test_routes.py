@@ -226,3 +226,10 @@ class TestPromotionServer(unittest.TestCase):
         # check the data just to be sure
         for promotion in data:
             self.assertEqual(promotion["category"], test_category)
+
+    def test_unsupported_method(self):
+        """Unsupported requests are rejected"""
+        resp = self.app.delete(
+            "/promotions"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
