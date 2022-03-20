@@ -156,26 +156,26 @@ class TestPromotionServer(unittest.TestCase):
             new_promotion["available"], test_promotion.available, "Availability does not match"
         )
 
-    # def test_create_promotion_no_data(self):
-    #     """Create a Promotion with missing data"""
-    #     resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_create_promotion_no_data(self):
+        """Create a Promotion with missing data"""
+        resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # def test_create_promotion_no_content_type(self):
-    #     """Create a Promotion with no content type"""
-    #     resp = self.app.post(BASE_URL)
-    #     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    def test_create_promotion_no_content_type(self):
+        """Create a Promotion with no content type"""
+        resp = self.app.post(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # def test_create_promotion_bad_available(self):
-    #     """ Create a Promotion with bad available data """
-    #     test_promotion = PromotionFactory()
-    #     logging.debug(test_promotion)
-    #     # change available to a string
-    #     test_promotion.available = "true"
-    #     resp = self.app.post(
-    #         BASE_URL, json=test_promotion.serialize(), content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_create_promotion_bad_available(self):
+        """ Create a Promotion with bad available data """
+        test_promotion = PromotionFactory()
+        logging.debug(test_promotion)
+        # change available to a string
+        test_promotion.available = "true"
+        resp = self.app.post(
+            BASE_URL, json=test_promotion.serialize(), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
     
     def test_delete_promotion(self):
         """Delete a Promotion"""
