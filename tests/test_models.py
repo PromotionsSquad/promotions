@@ -119,6 +119,26 @@ class TestPromotionModel(unittest.TestCase):
         promotions = Promotion.all()
         self.assertEqual(len(promotions), 5)
 
+    def test_update_a_promotion(self):
+        """Update a Promotion"""
+        promotion = PromotionFactory()
+        logging.debug(promotion)
+        promotion.create()
+        logging.debug(promotion)
+        self.assertEqual(promotion.id, 1)
+        # Change it an save it
+        promotion.category = "k9"
+        original_id = promotion.id
+        promotion.update()
+        self.assertEqual(promotion.id, original_id)
+        self.assertEqual(promotion.category, "k9")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        promotions = Promotion.all()
+        self.assertEqual(len(promotions), 1)
+        self.assertEqual(promotions[0].id, 1)
+        self.assertEqual(promotions[0].category, "k9")
+
     def test_delete_a_promotion(self):
         """Delete a Promotion"""
         promotion = PromotionFactory()

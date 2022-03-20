@@ -177,6 +177,27 @@ class TestPromotionServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
     
+    def test_update_promotion(self):
+        """Update an existing Promotion"""
+        # create a promotion to update
+        test_promotion = PromotionFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_promotion.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # update the pet
+        new_promotion = resp.get_json()
+        logging.debug(new_promotion)
+        new_promotion["category"] = "unknown"
+        resp = self.app.put(
+            "/promotions/{}".format(new_promotion["id"]),
+            json=new_promotion,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_promotion = resp.get_json()
+        self.assertEqual(updated_promotion["category"], "unknown")
+
     def test_delete_promotion(self):
         """Delete a Promotion"""
         test_promotion = self._create_promotions(1)[0]
@@ -205,3 +226,10 @@ class TestPromotionServer(unittest.TestCase):
         # check the data just to be sure
         for promotion in data:
             self.assertEqual(promotion["category"], test_category)
+
+    def test_unsupported_method(self):
+        """Unsupported requests are rejected"""
+        resp = self.app.delete(
+            "/promotions"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
