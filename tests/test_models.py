@@ -158,6 +158,52 @@ class TestPromotionModel(unittest.TestCase):
         promotion = Promotion()
         self.assertRaises(DataValidationError, promotion.deserialize, data)
 
+    def test_find_promotion(self):
+        """Find a Promotion by ID"""
+        promotions = PromotionFactory.create_batch(3)
+        for promotion in promotions:
+            promotion.create()
+        logging.debug(promotions)
+        # make sure they got saved
+        self.assertEqual(len(Promotion.all()), 3)
+        # find the 2nd promotion in the list
+        promotion = Promotion.find(promotions[1].id)
+        self.assertIsNot(promotion, None)
+        self.assertEqual(promotion.id, promotions[1].id)
+        self.assertEqual(promotion.name, promotions[1].name)
+        self.assertEqual(promotion.available, promotions[1].available)
+
+    def test_find_by_category(self):
+        """Find Promotions by Category"""
+        Promotion(name="Fido", category="dog", available=True).create()
+        Promotion(name="Kitty", category="cat", available=False).create()
+        promotions = Promotion.find_by_category("cat")
+        self.assertEqual(promotions[0].category, "cat")
+        self.assertEqual(promotions[0].name, "Kitty")
+        self.assertEqual(promotions[0].available, False)
+
+    def test_find_by_name(self):
+        """Find a Promotion by Name"""
+        Promotion(name="Fido", category="dog", available=True).create()
+        Promotion(name="Kitty", category="cat", available=False).create()
+        promotions = Promotion.find_by_name("Kitty")
+        self.assertEqual(promotions[0].category, "cat")
+        self.assertEqual(promotions[0].name, "Kitty")
+        self.assertEqual(promotions[0].available, False)
+
+    def test_find_by_availability(self):
+        """Find Promotions by Availability"""
+        Promotion(name="Fido", category="dog", available=True).create()
+        Promotion(name="Kitty", category="cat", available=False).create()
+        Promotion(name="Fifi", category="dog", available=True).create()
+        promotions = Promotion.find_by_availability(False)
+        promotion_list = list(promotions)
+        self.assertEqual(len(promotion_list), 1)
+        self.assertEqual(promotions[0].name, "Kitty")
+        self.assertEqual(promotions[0].category, "cat")
+        promotions = Promotion.find_by_availability(True)
+        promotion_list = list(promotions)
+        self.assertEqual(len(promotion_list), 2)
 
     def test_find_or_404_found(self):
         """Find or return 404 found"""
