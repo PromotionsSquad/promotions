@@ -29,7 +29,6 @@ available (boolean) - True for promotions that are available
 
 """
 import logging
-from enum import Enum
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
