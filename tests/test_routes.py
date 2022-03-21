@@ -30,9 +30,9 @@ import unittest
 
 # from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
+from factories import PromotionFactory
 from service import app, status
 from service.models import db, init_db
-from factories import PromotionFactory
 
 # Disable all but critical errors during normal test run
 # uncomment for debugging failing tests
@@ -176,7 +176,7 @@ class TestPromotionServer(unittest.TestCase):
             BASE_URL, json=test_promotion.serialize(), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-    
+
     def test_update_promotion(self):
         """Update an existing Promotion"""
         # create a promotion to update
@@ -216,7 +216,9 @@ class TestPromotionServer(unittest.TestCase):
         """Query Promotions by Category"""
         promotions = self._create_promotions(10)
         test_category = promotions[0].category
-        category_promotions = [promotion for promotion in promotions if promotion.category == test_category]
+        category_promotions = [
+            promotion for promotion in promotions if promotion.category == test_category
+        ]
         resp = self.app.get(
             BASE_URL, query_string="category={}".format(quote_plus(test_category))
         )

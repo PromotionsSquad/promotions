@@ -27,9 +27,9 @@ import os
 import logging
 import unittest
 from werkzeug.exceptions import NotFound
+from factories import PromotionFactory
 from service.models import Promotion, DataValidationError, db
 from service import app
-from factories import PromotionFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -94,14 +94,14 @@ class TestPromotionModel(unittest.TestCase):
         self.assertEqual(promotion.id, 1)
         promotions = Promotion.all()
         self.assertEqual(len(promotions), 1)
-   
+
     def test_read_a_promotion(self):
         """Read a Promotion"""
         promotion = PromotionFactory()
         logging.debug(promotion)
         promotion.create()
         self.assertEqual(promotion.id, 1)
-        # Fetch it back 
+        # Fetch it back
         found_promotion = Promotion.find(promotion.id)
         self.assertEqual(found_promotion.id, promotion.id)
         self.assertEqual(found_promotion.name, promotion.name)
@@ -112,7 +112,7 @@ class TestPromotionModel(unittest.TestCase):
         promotions = Promotion.all()
         self.assertEqual(promotions, [])
         # Create 5 Promotions
-        for i in range(5):
+        for _ in range(5):
             promotion = PromotionFactory()
             promotion.create()
         # See if we get back 5 promotions
