@@ -15,13 +15,13 @@
 """
 Test Factory to make fake objects for testing
 """
+from datetime import datetime
 import factory
-from factory.fuzzy import FuzzyChoice
+from factory.fuzzy import FuzzyChoice, FuzzyDateTime
 from service.models import Promotion
 
-
 class PromotionFactory(factory.Factory):
-    """Creates fake pets that you don't have to feed"""
+    """Creates fake promotions"""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Maps factory to data model"""
@@ -29,6 +29,7 @@ class PromotionFactory(factory.Factory):
         model = Promotion
 
     id = factory.Sequence(lambda n: n)
-    name = factory.Faker("first_name")
-    category = FuzzyChoice(choices=["dog", "cat", "bird", "fish"])
-    available = FuzzyChoice(choices=[True, False])
+    name = "first_month_free"
+    starts_at = datetime(2022, 4, 1)
+    ends_at = datetime(2022, 6, 30)
+    active = FuzzyChoice(choices=[True, False])

@@ -24,11 +24,10 @@ Promotion - A Promotion used in the Promotion Store
 Attributes:
 -----------
 name (string) - the name of the promotion
-category (string) - the category the promotion belongs to (i.e., Final Sale, 50% sale)
-available (boolean) - True for promotions that are available
 
 """
 import logging
+from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -60,8 +59,9 @@ class Promotion(db.Model):
     ##################################################
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63), nullable=False)
-    category = db.Column(db.String(63), nullable=False)
-    available = db.Column(db.Boolean(), nullable=False, default=False)
+    starts_at = db.Column(db.DateTime)
+    ends_at = db.Column(db.DateTime)
+    active = db.Column(db.Boolean())
 
     ##################################################
     # INSTANCE METHODS
@@ -100,8 +100,9 @@ class Promotion(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "category": self.category,
-            "available": self.available,
+            "starts_at": self.starts_at.strftime("%Y-%m-%d"),
+            "ends_at": self.ends_at.strftime("%Y-%m-%d"),
+            "active": self.active,
         }
 
     def deserialize(self, data: dict):
@@ -112,13 +113,14 @@ class Promotion(db.Model):
         """
         try:
             self.name = data["name"]
-            self.category = data["category"]
-            if isinstance(data["available"], bool):
-                self.available = data["available"]
+            self.starts_at = datetime.strptime(data["starts_at"], "%Y-%m-%d")
+            self.ends_at = datetime.strptime(data["ends_at"], "%Y-%m-%d")
+            if isinstance(data["active"], bool):
+                self.active = data["active"]
             else:
                 raise DataValidationError(
-                    "Invalid type for boolean [available]: "
-                    + str(type(data["available"]))
+                    "Invalid type for boolean [active]: "
+                    + str(type(data["active"]))
                 )
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0])
@@ -211,15 +213,15 @@ class Promotion(db.Model):
         return cls.query.filter(cls.category == category)
 
     @classmethod
-    def find_by_availability(cls, available: bool = True) -> list:
-        """Returns all Promotions by their availability
+    def find_by_active(cls, active: bool = True) -> list:
+        """Returns all Promotions by their active
 
-        :param available: True for promotions that are available
-        :type available: str
+        :param active: True for promotions that are active
+        :type active: bool
 
-        :return: a collection of Promotions that are available
+        :return: a collection of Promotions that are active
         :rtype: list
 
         """
-        logger.info("Processing available query for %s ...", available)
-        return cls.query.filter(cls.available == available)
+        logger.info("Processing active query for %s ...", active)
+        return cls.query.filter(cls.active == active)
