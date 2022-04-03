@@ -26,10 +26,12 @@ While debugging just these tests it's convenient to use this:
 import os
 import logging
 import unittest
+from datetime import datetime
 from werkzeug.exceptions import NotFound
 from factories import PromotionFactory
 from service.models import Promotion, DataValidationError, db
 from service import app
+from sqlalchemy.sql import func
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -73,20 +75,19 @@ class TestPromotionModel(unittest.TestCase):
 
     def test_create_a_promotion(self):
         """Create a promotion and assert that it exists"""
-        promotion = Promotion(name="Fido", category="dog", available=True)
+        promotion = Promotion(name="first_month_free", starts_at="2022-04-01", ends_at="2022-06-01", active=False)
         self.assertTrue(promotion is not None)
         self.assertEqual(promotion.id, None)
-        self.assertEqual(promotion.name, "Fido")
-        self.assertEqual(promotion.category, "dog")
-        self.assertEqual(promotion.available, True)
-        promotion = Promotion(name="Fido", category="dog", available=False)
-        self.assertEqual(promotion.available, False)
+        self.assertEqual(promotion.name, "first_month_free")
+        self.assertEqual(promotion.starts_at, "2022-04-01")
+        self.assertEqual(promotion.ends_at, "2022-06-01")
+        self.assertEqual(promotion.active, False)
 
     def test_add_a_promotion(self):
         """Create a promotion and add it to the database"""
         promotions = Promotion.all()
         self.assertEqual(promotions, [])
-        promotion = Promotion(name="Fido", category="dog", available=True)
+        promotion = Promotion(name="first_month_free", starts_at="2022-04-01", ends_at="2022-06-01", active=False)
         self.assertTrue(promotion is not None)
         self.assertEqual(promotion.id, None)
         promotion.create()
@@ -105,7 +106,9 @@ class TestPromotionModel(unittest.TestCase):
         found_promotion = Promotion.find(promotion.id)
         self.assertEqual(found_promotion.id, promotion.id)
         self.assertEqual(found_promotion.name, promotion.name)
-        self.assertEqual(found_promotion.category, promotion.category)
+        self.assertEqual(found_promotion.starts_at, promotion.starts_at)
+        self.assertEqual(found_promotion.ends_at, promotion.ends_at)
+        self.assertEqual(found_promotion.active, promotion.active)
 
     def test_list_all_promotions(self):
         """List Promotions in the database"""
@@ -127,17 +130,17 @@ class TestPromotionModel(unittest.TestCase):
         logging.debug(promotion)
         self.assertEqual(promotion.id, 1)
         # Change it an save it
-        promotion.category = "k9"
+        promotion.starts_at = "2022-04-02"
         original_id = promotion.id
         promotion.update()
         self.assertEqual(promotion.id, original_id)
-        self.assertEqual(promotion.category, "k9")
+        self.assertEqual(promotion.starts_at, datetime(2022, 4, 2))
         # Fetch it back and make sure the id hasn't changed
         # but the data did change
         promotions = Promotion.all()
         self.assertEqual(len(promotions), 1)
         self.assertEqual(promotions[0].id, 1)
-        self.assertEqual(promotions[0].category, "k9")
+        self.assertEqual(promotions[0].starts_at, datetime(2022, 4, 2))
 
     def test_delete_a_promotion(self):
         """Delete a Promotion"""
@@ -157,30 +160,34 @@ class TestPromotionModel(unittest.TestCase):
         self.assertEqual(data["id"], promotion.id)
         self.assertIn("name", data)
         self.assertEqual(data["name"], promotion.name)
-        self.assertIn("category", data)
-        self.assertEqual(data["category"], promotion.category)
-        self.assertIn("available", data)
-        self.assertEqual(data["available"], promotion.available)
+        self.assertIn("starts_at", data)
+        self.assertEqual(data["starts_at"], "2022-04-01")
+        self.assertIn("ends_at", data)
+        self.assertEqual(data["ends_at"], "2022-06-30")
+        self.assertIn("active", data)
+        self.assertEqual(data["active"], promotion.active)
 
     def test_deserialize_a_promotion(self):
         """Test deserialization of a Promotion"""
         data = {
             "id": 1,
-            "name": "Kitty",
-            "category": "cat",
-            "available": True,
+            "name": "30_days_free",
+            "starts_at": "2022-04-03",
+            "ends_at": "2022-06-30",
+            "active": True,
         }
         promotion = Promotion()
         promotion.deserialize(data)
         self.assertNotEqual(promotion, None)
         self.assertEqual(promotion.id, None)
-        self.assertEqual(promotion.name, "Kitty")
-        self.assertEqual(promotion.category, "cat")
-        self.assertEqual(promotion.available, True)
+        self.assertEqual(promotion.name, "30_days_free")
+        self.assertEqual(promotion.starts_at, datetime(2022, 4, 3))
+        self.assertEqual(promotion.ends_at, datetime(2022, 6, 30))
+        self.assertEqual(promotion.active, True)
 
     def test_deserialize_missing_data(self):
         """Test deserialization of a Promotion with missing data"""
-        data = {"id": 1, "name": "Kitty", "category": "cat"}
+        data = {"id": 1, "name": "30_days_free"}
         promotion = Promotion()
         self.assertRaises(DataValidationError, promotion.deserialize, data)
 
@@ -190,11 +197,11 @@ class TestPromotionModel(unittest.TestCase):
         promotion = Promotion()
         self.assertRaises(DataValidationError, promotion.deserialize, data)
 
-    def test_deserialize_bad_available(self):
-        """Test deserialization of bad available attribute"""
+    def test_deserialize_bad_active(self):
+        """Test deserialization of bad active attribute"""
         test_promotion = PromotionFactory()
         data = test_promotion.serialize()
-        data["available"] = "true"
+        data["active"] = "true"
         promotion = Promotion()
         self.assertRaises(DataValidationError, promotion.deserialize, data)
 
@@ -211,39 +218,31 @@ class TestPromotionModel(unittest.TestCase):
         self.assertIsNot(promotion, None)
         self.assertEqual(promotion.id, promotions[1].id)
         self.assertEqual(promotion.name, promotions[1].name)
-        self.assertEqual(promotion.available, promotions[1].available)
-
-    def test_find_by_category(self):
-        """Find Promotions by Category"""
-        Promotion(name="Fido", category="dog", available=True).create()
-        Promotion(name="Kitty", category="cat", available=False).create()
-        promotions = Promotion.find_by_category("cat")
-        self.assertEqual(promotions[0].category, "cat")
-        self.assertEqual(promotions[0].name, "Kitty")
-        self.assertEqual(promotions[0].available, False)
+        self.assertEqual(promotion.starts_at, promotions[1].starts_at)
+        self.assertEqual(promotion.ends_at, promotions[1].ends_at)
+        self.assertEqual(promotion.active, promotions[1].active)
 
     def test_find_by_name(self):
         """Find a Promotion by Name"""
-        Promotion(name="Fido", category="dog", available=True).create()
-        Promotion(name="Kitty", category="cat", available=False).create()
-        promotions = Promotion.find_by_name("Kitty")
-        self.assertEqual(promotions[0].category, "cat")
-        self.assertEqual(promotions[0].name, "Kitty")
-        self.assertEqual(promotions[0].available, False)
+        Promotion(name="first_month_free", starts_at="2022-04-01", ends_at="2022-06-01", active=False).create()
+        Promotion(name="ten_percent_discount", starts_at="2022-05-01", ends_at="2022-07-01", active=True).create()
+        promotions = Promotion.find_by_name("first_month_free")
+        self.assertEqual(promotions[0].name, "first_month_free")
+        self.assertEqual(promotions[0].starts_at, datetime(2022,4,1))
+        self.assertEqual(promotions[0].ends_at, datetime(2022,6,1))
+        self.assertEqual(promotions[0].active, False)
 
-    def test_find_by_availability(self):
-        """Find Promotions by Availability"""
-        Promotion(name="Fido", category="dog", available=True).create()
-        Promotion(name="Kitty", category="cat", available=False).create()
-        Promotion(name="Fifi", category="dog", available=True).create()
-        promotions = Promotion.find_by_availability(False)
+    def test_find_by_active(self):
+        """Find Promotions by Active"""
+        Promotion(name="first_month_free", starts_at="2022-04-01", ends_at="2022-06-01", active=False).create()
+        Promotion(name="ten_percent_discount", starts_at="2022-05-01", ends_at="2022-07-01", active=True).create()
+        promotions = Promotion.find_by_active(True)
         promotion_list = list(promotions)
         self.assertEqual(len(promotion_list), 1)
-        self.assertEqual(promotions[0].name, "Kitty")
-        self.assertEqual(promotions[0].category, "cat")
-        promotions = Promotion.find_by_availability(True)
-        promotion_list = list(promotions)
-        self.assertEqual(len(promotion_list), 2)
+        self.assertEqual(promotions[0].name, "ten_percent_discount")
+        self.assertEqual(promotions[0].starts_at, datetime(2022,5,1))
+        self.assertEqual(promotions[0].ends_at, datetime(2022,7,1))
+        self.assertEqual(promotions[0].active, True)
 
     def test_find_or_404_found(self):
         """Find or return 404 found"""
@@ -255,7 +254,7 @@ class TestPromotionModel(unittest.TestCase):
         self.assertIsNot(promotion, None)
         self.assertEqual(promotion.id, promotions[1].id)
         self.assertEqual(promotion.name, promotions[1].name)
-        self.assertEqual(promotion.available, promotions[1].available)
+        self.assertEqual(promotion.active, promotions[1].active)
 
     def test_find_or_404_not_found(self):
         """Find or return 404 NOT found"""

@@ -139,10 +139,7 @@ class TestPromotionServer(unittest.TestCase):
         new_promotion = resp.get_json()
         self.assertEqual(new_promotion["name"], test_promotion.name, "Names do not match")
         self.assertEqual(
-            new_promotion["category"], test_promotion.category, "Categories do not match"
-        )
-        self.assertEqual(
-            new_promotion["available"], test_promotion.available, "Availability does not match"
+            new_promotion["active"], test_promotion.active, "Active does not match"
         )
         # Check that the location header was correct
         resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
@@ -150,10 +147,7 @@ class TestPromotionServer(unittest.TestCase):
         new_promotion = resp.get_json()
         self.assertEqual(new_promotion["name"], test_promotion.name, "Names do not match")
         self.assertEqual(
-            new_promotion["category"], test_promotion.category, "Categories do not match"
-        )
-        self.assertEqual(
-            new_promotion["available"], test_promotion.available, "Availability does not match"
+            new_promotion["active"], test_promotion.active, "Active does not match"
         )
 
     def test_create_promotion_no_data(self):
@@ -171,7 +165,7 @@ class TestPromotionServer(unittest.TestCase):
         test_promotion = PromotionFactory()
         logging.debug(test_promotion)
         # change available to a string
-        test_promotion.available = "true"
+        test_promotion.active = "true"
         resp = self.app.post(
             BASE_URL, json=test_promotion.serialize(), content_type="application/json"
         )
@@ -188,7 +182,7 @@ class TestPromotionServer(unittest.TestCase):
         # update the pet
         new_promotion = resp.get_json()
         logging.debug(new_promotion)
-        new_promotion["category"] = "unknown"
+        new_promotion["starts_at"] = "2022-12-25"
         resp = self.app.put(
             "/promotions/{}".format(new_promotion["id"]),
             json=new_promotion,
@@ -196,7 +190,7 @@ class TestPromotionServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_promotion = resp.get_json()
-        self.assertEqual(updated_promotion["category"], "unknown")
+        self.assertEqual(updated_promotion["starts_at"], "2022-12-25")
 
     def test_delete_promotion(self):
         """Delete a Promotion"""
@@ -211,23 +205,6 @@ class TestPromotionServer(unittest.TestCase):
             "{0}/{1}".format(BASE_URL, test_promotion.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_query_promotion_list_by_category(self):
-        """Query Promotions by Category"""
-        promotions = self._create_promotions(10)
-        test_category = promotions[0].category
-        category_promotions = [
-            promotion for promotion in promotions if promotion.category == test_category
-        ]
-        resp = self.app.get(
-            BASE_URL, query_string="category={}".format(quote_plus(test_category))
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(category_promotions))
-        # check the data just to be sure
-        for promotion in data:
-            self.assertEqual(promotion["category"], test_category)
 
     def test_unsupported_method(self):
         """Unsupported requests are rejected"""

@@ -55,11 +55,8 @@ def list_promotions():
     """Returns all of the promotions"""
     app.logger.info("Request for promotion list")
     promotions = []
-    category = request.args.get("category")
     name = request.args.get("name")
-    if category:
-        promotions = Promotion.find_by_category(category)
-    elif name:
+    if name:
         promotions = Promotion.find_by_name(name)
     else:
         promotions = Promotion.all()
