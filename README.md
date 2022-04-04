@@ -1,8 +1,14 @@
+## Markdown for Badges
+
+[![Build Status](https://github.com/PromotionsSqaud/promotions/actions/workflows/tdd.yml/badge.svg)](https://github.com/PromotionsSquad/promotions/actions)
+
 # Promotions
 
 Below are the instructions for creating and managing promotions
 
 You can find more information below.
+
+
 
 ## Overview
 
