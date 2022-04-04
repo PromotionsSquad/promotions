@@ -4,6 +4,10 @@ Below are the instructions for creating and managing promotions
 
 You can find more information below.
 
+## Markdown for codecoverage
+
+![Build Status](https://github.com/kripa528/promotions/actions/workflows/manifest.yml/badge.svg)
+
 ## Overview
 
 In this repository you will find the instructions and files for managing promotions. The `/service` folder contains our `models.py` file for our promotions model and a `routes.py` file for promotions. The `/tests` folder has test case starter code for testing the promotions model and the service separately. The functionality of our promotions model will be to create, manage, edit and delete promotions.
