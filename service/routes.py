@@ -56,14 +56,18 @@ def list_promotions():
     app.logger.info("Request for promotion list")
     promotions = []
     name = request.args.get("name")
+    active = request.args.get("active")
     if name:
         promotions = Promotion.find_by_name(name)
+    elif active:
+        promotions = Promotion.find_by_active(active)
     else:
         promotions = Promotion.all()
 
     results = [promotion.serialize() for promotion in promotions]
     app.logger.info("Returning %d promotions", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
+
 
 
 ######################################################################
