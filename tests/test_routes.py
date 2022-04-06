@@ -108,6 +108,15 @@ class TestPromotionServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(len(data), 5)
 
+    def test_get_active_promotions(self):
+        """Get (query) a list of Active Promotions"""
+        self._create_promotions(5)
+        resp = self.app.get("/promotions?active=true")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        for promotion in data:
+            self.assertEqual(promotion["active"], True)
+    
     def test_get_promotion(self):
         """Get a single Promotion"""
         # get the id of a promotion
