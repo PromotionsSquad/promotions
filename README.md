@@ -1,6 +1,6 @@
 ## Markdown for Badges
 
-[![Build Status](https://github.com/PromotionsSqaud/promotions/actions/workflows/tdd.yml/badge.svg)](https://github.com/PromotionsSquad/promotions/actions)
+[![Build Status](https://github.com/PromotionsSquad/promotions/actions/workflows/tdd.yml/badge.svg)](https://github.com/PromotionsSquad/promotions/actions)
 
 # Promotions
 
