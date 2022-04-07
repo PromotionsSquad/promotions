@@ -136,6 +136,27 @@ def update_promotions(promotion_id):
 
 
 ######################################################################
+# INACTIVATE AN EXISTING promotion
+######################################################################
+@app.route("/promotions/<int:promotion_id>/inactivate", methods=["PUT"])
+def inactivate_promotions(promotion_id):
+    """
+    Inactivate a promotion
+
+    This endpoint will set the "active" characteristic of a promotion to False
+    """
+    app.logger.info("Request to inactivate promotion with id: %s", promotion_id)
+    promotion = Promotion.find(promotion_id)
+    if not promotion:
+        raise NotFound("Promotion with id '{}' was not found.".format(promotion_id))
+    promotion.active = False
+    promotion.update()
+
+    app.logger.info("Promotion with ID [%s] was inactivated.", promotion.id)
+    return make_response(jsonify(promotion.serialize()), status.HTTP_200_OK)
+
+
+######################################################################
 # DELETE A promotion
 ######################################################################
 @app.route("/promotions/<int:promotion_id>", methods=["DELETE"])

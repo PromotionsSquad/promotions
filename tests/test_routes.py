@@ -201,6 +201,18 @@ class TestPromotionServer(unittest.TestCase):
         updated_promotion = resp.get_json()
         self.assertEqual(updated_promotion["starts_at"], "2022-12-25")
 
+    def test_inactivate_promotion(self):
+        """Inactivate an existing Promotion"""
+        test_promotion = self._create_promotions(1)[0]
+        resp = self.app.put(
+            "/promotions/{}/inactivate".format(test_promotion.id),
+            content_type = CONTENT_TYPE_JSON,
+            )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        inactive_promotion = resp.get_json()
+        logging.debug(inactive_promotion)
+        self.assertEqual(inactive_promotion["active"], False)
+
     def test_delete_promotion(self):
         """Delete a Promotion"""
         test_promotion = self._create_promotions(1)[0]
