@@ -204,6 +204,7 @@ class TestPromotionServer(unittest.TestCase):
     def test_inactivate_promotion(self):
         """Inactivate an existing Promotion"""
         test_promotion = self._create_promotions(1)[0]
+        test_promotion.active = True
         resp = self.app.put(
             "/promotions/{}/inactivate".format(test_promotion.id),
             content_type = CONTENT_TYPE_JSON,
