@@ -199,20 +199,6 @@ class Promotion(db.Model):
         return cls.query.filter(cls.name == name)
 
     @classmethod
-    def find_by_category(cls, category: str) -> list:
-        """Returns all of the Promotions in a category
-
-        :param category: the category of the Promotions you want to match
-        :type category: str
-
-        :return: a collection of Promotions in that category
-        :rtype: list
-
-        """
-        logger.info("Processing category query for %s ...", category)
-        return cls.query.filter(cls.category == category)
-
-    @classmethod
     def find_by_active(cls, active: bool = True) -> list:
         """Returns all Promotions by their active
 

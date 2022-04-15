@@ -90,6 +90,7 @@ class TestPromotionServer(unittest.TestCase):
             )
             new_promotion = resp.get_json()
             test_promotion.id = new_promotion["id"]
+            test_promotion.name = new_promotion["name"]
             promotions.append(test_promotion)
         return promotions
 
@@ -107,6 +108,15 @@ class TestPromotionServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         self.assertEqual(len(data), 5)
+
+    def test_get__promotions_by_name(self):
+        """Get (query) a list promotions by name"""
+        self._create_promotions(5)
+        resp = self.app.get("/promotions?name=bogo")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        for promotion in data:
+            self.assertEqual(promotion["name"], "bogo")
 
     def test_get_active_promotions(self):
         """Get (query) a list of Active Promotions"""
@@ -179,7 +189,7 @@ class TestPromotionServer(unittest.TestCase):
             BASE_URL, json=test_promotion.serialize(), content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
+ 
     def test_update_promotion(self):
         """Update an existing Promotion"""
         # create a promotion to update
