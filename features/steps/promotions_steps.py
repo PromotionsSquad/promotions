@@ -49,3 +49,36 @@ def step_impl(context):
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
         expect(context.resp.status_code).to_equal(201)
+
+import logging
+from behave import when, then
+from compare import expect, ensure
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions
+
+def before_all(context):
+ """ Executed once before all tests """
+ context.driver = webdriver.PhantomJS()
+ context.driver.set_window_size(1120, 550)
+ context.base_url = BASE_URL
+ 
+ID_PREFIX = 'promotion_'
+
+@when('I visit the "home page"')
+def step_impl(context):
+    """ Make a call to the base URL """
+    context.driver.get(context.base_url)
+    # Uncomment next line to take a screenshot of the web page
+    #context.driver.save_screenshot('home_page.png')
+
+@then('I should see "{message}" in the title')
+def step_impl(context, message):
+    """ Check the document title for a message """
+    expect(context.driver.title).to_contain(message)
+
+@then('I should not see "{message}"')
+def step_impl(context, message):
+    error_msg = "I should not see '%s' in '%s'" % (message, context.resp.text)
+    ensure(message in context.resp.text, False, error_msg)
