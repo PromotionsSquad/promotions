@@ -30,7 +30,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions
 
-ID_PREFIX = 'order_'
+ID_PREFIX = 'promotion_'
 
 @when('I visit the "home page"')
 def step_impl(context):
