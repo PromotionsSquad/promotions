@@ -25,7 +25,7 @@ Attributes:
 -----------
 name (string) - the name of the promotion
 starts_at - when the promotion begins
-end_at - when the promotion ends
+ends_at - when the promotion ends
 active - is the promotion active?
 """
 import logging
