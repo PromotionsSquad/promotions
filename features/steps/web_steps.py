@@ -46,8 +46,10 @@ def step_impl(context, message):
 
 @then('I should not see "{message}"')
 def step_impl(context, message):
-    error_msg = "I should not see '%s' in '%s'" % (message, context.resp.text)
-    ensure(message in context.resp.text, False, error_msg)
+    elements = context.driver.find_elements(By.TAG_NAME, 'body')
+    body = elements[0].text
+    error_msg = "I should not see '%s' in '%s'" % (message, body)
+    ensure(message in body, False, error_msg)
 
 # @when('I set the "{element_name}" to "{text_string}"')
 # def step_impl(context, element_name, text_string):
