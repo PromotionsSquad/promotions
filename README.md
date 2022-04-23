@@ -1,5 +1,5 @@
 ## Markdown for Badges
-
+[![Build Status](https://github.com/PromotionsSquad/promotions/actions/workflows/bdd.yml/badge.svg)](https://github.com/PromotionsSquad/promotions/actions)
 [![Build Status](https://github.com/PromotionsSquad/promotions/actions/workflows/tdd.yml/badge.svg)](https://github.com/PromotionsSquad/promotions/actions)
 [![codecov](https://codecov.io/gh/PromotionsSquad/promotions/branch/main/graph/badge.svg?token=13A6UGXZDD)](https://codecov.io/gh/PromotionsSquad/promotions)
 # Promotions
