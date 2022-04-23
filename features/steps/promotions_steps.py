@@ -24,6 +24,13 @@ import json
 import requests
 from behave import given
 from compare import expect
+import logging
+from behave import when, then
+from compare import expect, ensure
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support import expected_conditions
 
 @given('the following promotions')
 def step_impl(context):
