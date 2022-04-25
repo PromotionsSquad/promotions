@@ -99,23 +99,14 @@ Scenario: Delete a Promotion
 
 Scenario: Inactivate a Promotion
     When I visit the "Home Page"
-    And I set the "Name" to "10_dollars_off"
+    And I set the "Name" to "buy_one_get_one"
     And I press the "Search" button
-    Then I should see "10_dollars_off" in the "Name" field
-    And I should see "2022-06-01" in the "starts_at" field
-    And I should see "2022-06-03" in the "ends_at" field
-    When I change "Name" to "20_dollars_off"
+    Then I should see "buy_one_get_one" in the "Name" field
+    When I select "False" in the "Active" dropdown
     And I press the "Update" button
     Then I should see the message "Success"
-    When I copy the "Id" field
-    And I press the "Clear" button
-    And I paste the "Id" field
-    And I press the "Retrieve" button
-    Then I should see "20_dollars_off" in the "Name" field
-    When I press the "Clear" button
-    And I press the "Search" button
-    Then I should see "20_dollars_off" in the results
-    And I should not see "10_dollars_off" in the results
+    When I press the "Search" button
+    Then I should see "false" in the results
 
 # Scenario: Update a Pet
 #     When I visit the "Home Page"
