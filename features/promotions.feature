@@ -5,12 +5,12 @@ Feature: The promotions service back-end
 
 Background:
     Given the following promotions
-        | name              | starts_at           | ends_at             | active  |
-        | buy_one_get_one   | 2022-06-01 00:00:00 | 2022-06-03 23:59:59 | True   |
-        | 10_dollars_off    | 2022-06-01 00:00:00 | 2022-06-03 23:59:59 | True    |
-        | 20_percent_off    | 2022-06-01 00:00:00 | 2022-06-03 23:59:59 | True    |
-        | free_shipping     | 2022-06-01 00:00:00 | 2022-06-03 23:59:59 | False   |
-        | 30_days_free      | 2022-06-01 00:00:00 | 2022-06-03 23:59:59 | True   |
+        | name              | starts_at   | ends_at     | active  |
+        | buy_one_get_one   | 2022-06-01  | 2022-06-03  | True    |
+        | 10_dollars_off    | 2022-06-01  | 2022-06-03  | True    |
+        | 20_percent_off    | 2022-06-01  | 2022-06-03  | True    |
+        | free_shipping     | 2022-06-01  | 2022-06-03  | False   |
+        | 30_days_free      | 2022-06-01  | 2022-06-03  | True    |
 
 Scenario: The server is running
     When I visit the "Home Page"
