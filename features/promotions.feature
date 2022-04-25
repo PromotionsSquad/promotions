@@ -100,6 +100,17 @@ Scenario: Update a Promotion
     Then I should see "20_dollars_off" in the results
     And I should not see "10_dollars_off" in the results
 
+Scenario: Inactivate a Promotion
+    When I visit the "Home Page"
+    And I set the "Name" to "buy_one_get_one"
+    And I press the "Search" button
+    Then I should see "buy_one_get_one" in the "Name" field
+    When I select "False" in the "Active" dropdown
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I press the "Search" button
+    Then I should see "false" in the results
+
 # Scenario: Update a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "buy_one_get_one "
