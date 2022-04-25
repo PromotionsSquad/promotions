@@ -6,12 +6,12 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#promotion_id").val(res._id);
+        $("#promotion_id").val(res.id);
         $("#promotion_name").val(res.name);
         $("#promotion_starts_at").val(res.starts_at);
         $("#promotion_ends_at").val(res.ends_at);
         $("#promotion_active").val(res.active);
-        if (res.available == true) {
+        if (res.active == true) {
             $("#promotion_active").val("true");
         } else {
             $("#promotion_active").val("false");
@@ -52,7 +52,7 @@ $(function () {
         };
 
         $("#flash_message").empty();
-        
+
         let ajax = $.ajax({
             type: "POST",
             url: "/promotions",
@@ -193,9 +193,9 @@ $(function () {
         }
         if (active) {
             if (queryString.length > 0) {
-                queryString += '&active=' + available
+                queryString += '&active=' + active
             } else {
-                queryString += 'active=' + available
+                queryString += 'active=' + active
             }
         }
 
@@ -222,7 +222,7 @@ $(function () {
             let firstPromotion = "";
             for(let i = 0; i < res.length; i++) {
                 let promotion = res[i];
-                table +=  `<tr id="row_${i}"><td>${promotion._id}</td><td>${promotion.name}</td><td>${promotion.starts_at}</td><td>${promotion.ends_at}</td><td>${promotion.active}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.starts_at}</td><td>${promotion.ends_at}</td><td>${promotion.active}</td></tr>`;
                 if (i == 0) {
                     firstPromotion = promotion;
                 }

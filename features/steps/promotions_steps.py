@@ -39,15 +39,14 @@ def step_impl(context):
     # list all of the promotions and delete them one by one
     context.resp = requests.get(context.base_url + '/promotions', headers=headers)
     expect(context.resp.status_code).to_equal(200)
-    for pet in context.resp.json():
-        context.resp = requests.delete(context.base_url + '/promotions/' + str(pet["_id"]), headers=headers)
+    for promotion in context.resp.json():
+        context.resp = requests.delete(context.base_url + '/promotions/' + str(promotion["id"]), headers=headers)
         expect(context.resp.status_code).to_equal(204)
-    
-    # load the database with new pets
+
+    # load the database with new promotions
     create_url = context.base_url + '/promotions'
     for row in context.table:
         data = {
-            "id": row['id'],
             "name": row['name'],
             "starts_at": row['starts_at'],
             "ends_at": row['ends_at'],

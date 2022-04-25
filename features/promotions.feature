@@ -3,13 +3,14 @@ Feature: The promotions service back-end
     I need a RESTful catalog service
     So that I can keep track of all promotions
 
-# Background:
-#     Given the following pets
-#         | name              | starts_at           | ends_at              | active  |
-#         | buy_one_get_one   | 2022-06-01 00:00:00 | 2022-06-03 23:59:59  | False   |
-#         | 10_dollars_off    | X                   | X                    | True    |
-#         | 20_percent_off    | Y                   | Y                    | True    |
-#         | free_shipping     | Z                   | Z                    | False   |
+Background:
+    Given the following promotions
+        | name              | starts_at   | ends_at     | active  |
+        | buy_one_get_one   | 2022-06-01  | 2022-06-03  | True    |
+        | 10_dollars_off    | 2022-06-01  | 2022-06-03  | True    |
+        | 20_percent_off    | 2022-06-01  | 2022-06-03  | True    |
+        | free_shipping     | 2022-06-01  | 2022-06-03  | False   |
+        | 30_days_free      | 2022-06-01  | 2022-06-03  | True    |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -53,14 +54,15 @@ Scenario: The server is running
 #     And I should not see "kitty" in the results
 #     And I should not see "leo" in the results
 
-# Scenario: Search for available
-#     When I visit the "Home Page"
-#     And I select "True" in the "Available" dropdown
-#     And I press the "Search" button
-#     Then I should see "fido" in the results
-#     And I should see "kitty" in the results
-#     And I should see "sammy" in the results
-#     And I should not see "leo" in the results
+Scenario: Search for active promotions
+    When I visit the "Home Page"
+    And I select "True" in the "Active" dropdown
+    And I press the "Search" button
+    Then I should see "30_days_free" in the results
+    And I should see "buy_one_get_one" in the results
+    And I should see "10_dollars_off" in the results
+    And I should see "20_percent_off" in the results
+    And I should not see "free_shipping" in the results
 
 # Scenario: Update a Pet
 #     When I visit the "Home Page"

@@ -58,11 +58,11 @@ def step_impl(context, message):
 #     element.clear()
 #     element.send_keys(text_string)
 
-# @when('I select "{text}" in the "{element_name}" dropdown')
-# def step_impl(context, text, element_name):
-#     element_id = ID_PREFIX + element_name.lower()
-#     element = Select(context.driver.find_element_by_id(element_id))
-#     element.select_by_visible_text(text)
+@when('I select "{text}" in the "{element_name}" dropdown')
+def step_impl(context, text, element_name):
+    element_id = ID_PREFIX + element_name.lower()
+    element = Select(context.driver.find_element_by_id(element_id))
+    element.select_by_visible_text(text)
 
 # @then('I should see "{text}" in the "{element_name}" dropdown')
 # def step_impl(context, text, element_name):
@@ -105,26 +105,26 @@ def step_impl(context, message):
 # # to get the element id of any button
 # ##################################################################
 
-# @when('I press the "{button}" button')
-# def step_impl(context, button):
-#     button_id = button.lower() + '-btn'
-#     context.driver.find_element_by_id(button_id).click()
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    button_id = button.lower() + '-btn'
+    context.driver.find_element_by_id(button_id).click()
 
-# @then('I should see "{customer}" in the results')
-# def step_impl(context, customer):
-#     found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
-#         expected_conditions.text_to_be_present_in_element(
-#             (By.ID, 'search_results'),
-#             customer
-#         )
-#     )
-#     expect(found).to_be(True)
+@then('I should see "{promotion}" in the results')
+def step_impl(context, promotion):
+    found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'search_results'),
+            promotion
+        )
+    )
+    expect(found).to_be(True)
 
-# @then('I should not see "{customer}" in the results')
-# def step_impl(context, customer):
-#     element = context.driver.find_element_by_id('search_results')
-#     error_msg = "I should not see '%s' in '%s'" % (customer, element.text)
-#     ensure(customer in element.text, False, error_msg)
+@then('I should not see "{promotion}" in the results')
+def step_impl(context, promotion):
+    element = context.driver.find_element_by_id('search_results')
+    error_msg = "I should not see '%s' in '%s'" % (promotion, element.text)
+    ensure(promotion in element.text, False, error_msg)
 
 # @then('I should see the message "{message}"')
 # def step_impl(context, message):
