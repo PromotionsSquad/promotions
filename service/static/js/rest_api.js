@@ -6,12 +6,12 @@ $(function () {
 
     // Updates the form with data from the response
     function update_form_data(res) {
-        $("#promotion_id").val(res._id);
+        $("#promotion_id").val(res.id);
         $("#promotion_name").val(res.name);
         $("#promotion_starts_at").val(res.starts_at);
         $("#promotion_ends_at").val(res.ends_at);
         $("#promotion_active").val(res.active);
-        if (res.available == true) {
+        if (res.active == true) {
             $("#promotion_active").val("true");
         } else {
             $("#promotion_active").val("false");
