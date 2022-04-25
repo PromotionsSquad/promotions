@@ -52,7 +52,7 @@ $(function () {
         };
 
         $("#flash_message").empty();
-        
+
         let ajax = $.ajax({
             type: "POST",
             url: "/promotions",
@@ -193,9 +193,9 @@ $(function () {
         }
         if (active) {
             if (queryString.length > 0) {
-                queryString += '&active=' + available
+                queryString += '&active=' + active
             } else {
-                queryString += 'active=' + available
+                queryString += 'active=' + active
             }
         }
 
