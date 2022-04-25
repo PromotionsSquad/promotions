@@ -222,7 +222,7 @@ $(function () {
             let firstPromotion = "";
             for(let i = 0; i < res.length; i++) {
                 let promotion = res[i];
-                table +=  `<tr id="row_${i}"><td>${promotion._id}</td><td>${promotion.name}</td><td>${promotion.starts_at}</td><td>${promotion.ends_at}</td><td>${promotion.active}</td></tr>`;
+                table +=  `<tr id="row_${i}"><td>${promotion.id}</td><td>${promotion.name}</td><td>${promotion.starts_at}</td><td>${promotion.ends_at}</td><td>${promotion.active}</td></tr>`;
                 if (i == 0) {
                     firstPromotion = promotion;
                 }
