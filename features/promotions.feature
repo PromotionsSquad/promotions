@@ -64,6 +64,36 @@ Scenario: Search for active promotions
     And I should see "20_percent_off" in the results
     And I should not see "free_shipping" in the results
 
+Scenario: Delete a Promotion
+    When I visit the "Home Page"
+    And I set the "name" to "30_days_free "
+    And I press the "Search" button
+    Then I should see "30_days_free " in the "name" field
+    And I should see "2022-06-01" in the "start" field
+    When I press the "Delete" button
+    Then I should see the message "Promotion has been Deleted!"
+    When I press the "Search" button
+    Then I should not see "30_days_free" in the results
+
+Scenario: Update a Promotion
+    When I visit the "Home Page"
+    And I set the "name" to "10_dollars_off"
+    And I press the "Search" button
+    Then I should see "10_dollars_off" in the "name" field
+    And I should see "2022-06-01" in the "start_at" field
+    When I change "10_dollars_off" to "20_percent_off"
+    And I press the "Update" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "20_percent_off" in the "name" field
+    When I press the "Clear" button
+    And I press the "Search" button
+    Then I should see "20_percent_off" in the results
+    Then I should not see "10_dollars_off" in the results
+
 # Scenario: Update a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "fido"
