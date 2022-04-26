@@ -39,8 +39,8 @@ $(function () {
     $("#create-btn").click(function () {
 
         let name = $("#promotion_name").val();
-        let starts_at = $("#starts_at").val();
-        let ends_at = $("#ends_at").val();
+        let starts_at = new Date($("#promotion_starts_at").val());
+        let ends_at = new Date($("#promotion_ends_at").val());
         let active = $("#promotion_active").val() == "true";
 
         let data = {
