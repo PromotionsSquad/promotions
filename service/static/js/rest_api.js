@@ -39,10 +39,9 @@ $(function () {
     $("#create-btn").click(function () {
 
         let name = $("#promotion_name").val();
-        let category = $("#promotion_category").val();
-        let available = $("#promotion_available").val() == "true";
-        let gender = $("#promotion_gender").val();
-        let birthday = $("#promotion_birthday").val();
+        let starts_at = $("#starts_at").val();
+        let ends_at = $("#ends_at").val();
+        let active = $("#promotion_active").val() == "true";
 
         let data = {
             "name": name,
