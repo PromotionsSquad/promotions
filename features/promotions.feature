@@ -17,28 +17,24 @@ Scenario: The server is running
     Then I should see "Promotion Demo RESTful Service" in the title
     And I should not see "404 Not Found"
 
-# Scenario: Create a Pet
-#     When I visit the "Home Page"
-#     And I set the "name" to "50_percent_off"
-#     And I set the "start_at" to "2022-06-02"
-#     And I set the "ends_at" to "2022-06-03"
-#     And I select "True" in the "active" dropdown
-#     And I select "Male" in the "Gender" dropdown
-#     And I set the "Birthday" to "06-16-2022"
-#     And I press the "Create" button
-#     Then I should see the message "Success"
-#     When I copy the "id" field
-#     And I press the "Clear" button
-#     Then the "Id" field should be empty
-#     And the "name" field should be empty
-#     And the "Category" field should be empty
-#     When I paste the "Id" field
-#     And I press the "Retrieve" button
-#     Then I should see "Happy" in the "Name" field
-#     And I should see "Hippo" in the "Category" field
-#     And I should see "False" in the "Available" dropdown
-#     And I should see "Male" in the "Gender" dropdown
-#     And I should see "2022-06-16" in the "Birthday" field
+Scenario: Create a Pet
+    When I visit the "Home Page"
+    And I set the "name" to "50_percent_off"
+    And I set the "starts_at" to "06-02-2022"
+    And I set the "ends_at" to "06-03-2022"
+    And I select "True" in the "active" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "name" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "50_percent_off" in the "name" field
+    And I should see "True" in the "active" dropdown
+    And I should see "2022-06-02" in the "starts_at" field
+    And I should see "2022-06-03" in the "ends_at" field
 
 Scenario: List all pets
     When I visit the "Home Page"
@@ -72,13 +68,6 @@ Scenario: Delete a Promotion
     Then I should see "30_days_free" in the results
     When I press the "Delete" button
     Then I should see the message "Promotion has been Deleted!"
-    
-    #When I press the "Search" button
-    #And I copy the "Name" field
-    #And I press the "Clear" button
-    #And I paste the "Name" field
-    #And I press the "Delete" button
-    #Then I should see the message "Promotion has been Deleted!"
 
 Scenario: Update a Promotion
     When I visit the "Home Page"
@@ -110,22 +99,3 @@ Scenario: Inactivate a Promotion
     Then I should see the message "Success"
     When I press the "Search" button
     Then I should see "false" in the results
-
-# Scenario: Update a Pet
-#     When I visit the "Home Page"
-#     And I set the "Name" to "buy_one_get_one "
-#     And I press the "Search" button
-#     Then I should see "buy_one_get_one" in the "Name" field
-#     And I should see "dog" in the "Category" field
-#     When I change "Name" to "Boxer"
-#     And I press the "Update" button
-#     Then I should see the message "Success"
-#     When I copy the "Id" field
-#     And I press the "Clear" button
-#     And I paste the "Id" field
-#     And I press the "Retrieve" button
-#     Then I should see "Boxer" in the "Name" field
-#     When I press the "Clear" button
-#     And I press the "Search" button
-#     Then I should see "Boxer" in the results
-#     Then I should not see "fido" in the results

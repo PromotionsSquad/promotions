@@ -9,14 +9,14 @@ services:
       dockerfile: .devcontainer/Dockerfile
     hostname: nyu
     ports:
-      - 8000:8000
+      - 8080:8080
     volumes:
       - ..:/app
     command: sleep infinity
     environment:
       FLASK_APP: service:app
       FLASK_ENV: development
-      GUNICORN_BIND: "0.0.0.0:8000"
+      GUNICORN_BIND: "0.0.0.0:8080"
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
     networks:
       - dev
