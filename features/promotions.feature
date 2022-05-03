@@ -20,8 +20,8 @@ Scenario: The server is running
 Scenario: Create a Pet
     When I visit the "Home Page"
     And I set the "name" to "50_percent_off"
-    And I set the "starts_at" to "2022-06-02"
-    And I set the "ends_at" to "2022-06-03"
+    And I set the "starts_at" to "06-02-2022"
+    And I set the "ends_at" to "06-03-2022"
     And I select "True" in the "active" dropdown
     And I press the "Create" button
     Then I should see the message "Success"
@@ -31,10 +31,10 @@ Scenario: Create a Pet
     And the "name" field should be empty
     When I paste the "Id" field
     And I press the "Retrieve" button
-    # Then I should see "50_percent_off" in the "name" field
-    # And I should see "True" in the "active" dropdown
-    # And I should see "2022-06-02" in the "starts_at" field
-    # And I should see "2022-06-03" in the "ends_at" field
+    Then I should see "50_percent_off" in the "name" field
+    And I should see "True" in the "active" dropdown
+    And I should see "2022-06-02" in the "starts_at" field
+    And I should see "2022-06-03" in the "ends_at" field
 
 Scenario: List all pets
     When I visit the "Home Page"
