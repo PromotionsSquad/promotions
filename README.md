@@ -6,48 +6,81 @@
 
 The promotions resource allows marketing managers to create, read, update, delete, search, and list promotions. At a minimum a promoution should contain a name, a start date, an end date, and whether or not the promotion is active.
 
-
-## Overview
-
-In this repository you will find the instructions and files for managing promotions. The `/service` folder contains our `models.py` file for our promotions model and a `routes.py` file for promotions. The `/tests` folder has test case starter code for testing the promotions model and the service separately. The functionality of our promotions model will be to create, manage, edit and delete promotions.
-
 ## Prerequisite Software Installation
 
 This lab uses Docker and Visual Studio Code with the Remote Containers extension to provide a consistent repeatable disposable development environment for all of the labs in this course.
 
 You will need the following software installed:
 
-Docker Desktop
-Visual Studio Code
-Remote Containers extension from the Visual Studio Marketplace
+[Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+[Visual Studio Code](https://code.visualstudio.com/)
+
+[Remote Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension from the Visual Studio Marketplace
+
 All of these can be installed manually by clicking on the links above or you can use a package manager like Homebrew on Mac of Chocolatey on Windows.
 
 Alternately, you can use Vagrant and VirtualBox to create a consistent development environment in a virtual machine (VM).
 
-You can read more about creating these environments in my article: Creating Reproducable Development Environments
+You can read more about creating these environments in John Rofrano's article: [Creating Reproducable Development Environments](https://medium.com/nerd-for-tech/creating-reproducible-development-environments-fac8d6471f35)
 
 ## Bring up the development environment
 
-To bring up the development environment you should clone this repo, change into the repo directory:
+1. Navigate to DevOps Folder
+2. Clone the Repo
 
+```
 $ git clone https://github.com/sternie-devops-squad/wishlists.git
-$ cd wishlists
-Depending on which development environment you created, pick from the following:
+```
 
-# Start developing with Visual Studio Code and Docker
+3. Change directory to promotions:
 
-Open Visual Studio Code using the code . command. VS Code will prompt you to reopen in a container and you should say yes. This will take a while as it builds the Docker image and creates a container from it to develop in.
+```
+$ cd promotions
+```
 
+4. Open Visual Studio Code using the code . command. VS Code will prompt you to reopen in a container and you should say yes. This will take a while as it builds the Docker image and creates a container from it to develop in.
+
+```
 $ code .
-Note that there is a period . after the code command. This tells Visual Studio Code to open the editor and load the current folder of files.
+```
+Note that there is a period `.` after the `code` command. This tells Visual Studio Code to open the editor and load the current folder of files.
 
-Once the environment is loaded you should be placed at a bash prompt in the /app folder inside of the development container. This folder is mounted to the current working directory of your repository on your computer. This means that any file you edit while inside of the /app folder in the container is actually being edited on your computer. You can then commit your changes to git from either inside or outside of the container.
+5. Open in Container - Make sure docker is running or you won't be able to open in container
+6. Pull up-to-date code from GitHub
 
-# Using Vagrant and VirtualBox
+```
+$ git pull
+```
 
-Bring up the virtual machine using Vagrant.
+## Running Nosetests
 
-$ vagrant up
-$ vagrant ssh
-$ cd /vagrant
-This will place you in the virtual machine in the /vagrant folder which has been shared with your computer so that your source files can be edited outside of the VM and run inside of the VM.
+As developers we always want to run the tests before we change any code. That way we know if we broke the code or if someone before us did. Always run the test cases first!
+
+1. Run the tests using `nosetests`
+
+```
+$ nosetests
+```
+## Accessing WebUI and Running BDD Tests
+
+1. The project uses honcho which gets it's commands from the Procfile. To start the service simply use:
+
+```
+$ honcho start
+```
+You should be able to reach the service at: http://localhost:8080. The port that is used is controlled by an environment variable defined in the .flaskenv file which Flask uses to load it's configuration from the environment by default.
+
+Once in the environment try various actions such as:
+- Add a new promotion
+- Update an existing promotion
+- Delete an existing promotion
+- Search for promotions
+- Query promotions by active status
+
+2. Run behave tests
+
+```
+$ behave
+```
+
