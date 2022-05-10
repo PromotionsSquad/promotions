@@ -30,7 +30,7 @@ You can read more about creating these environments in John Rofrano's article: [
 2. Clone the Repo
 
 ```
-$ git clone https://github.com/sternie-devops-squad/wishlists.git
+$ git clone https://github.com/PromotionsSquad/promotions.git
 ```
 
 3. Change directory to promotions:
